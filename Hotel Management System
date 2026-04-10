@@ -1,0 +1,92 @@
+from datetime import datetime
+
+class Hotel:
+    def __init__(self):
+        self.rooms = {
+            101: {"type": "Single", "price": 1000, "status": "Available"},
+            102: {"type": "Double", "price": 2000, "status": "Available"},
+            103: {"type": "Suite", "price": 4000, "status": "Available"},
+        }
+        self.bookings = {}
+
+    def display_rooms(self):
+        print("\nAvailable Rooms:")
+        for room, details in self.rooms.items():
+            print(f"Room {room} - {details['type']} - ₹{details['price']} - {details['status']}")
+
+    def book_room(self, name, room_no, days):
+        if self.rooms[room_no]["status"] == "Available":
+            self.rooms[room_no]["status"] = "Booked"
+            self.bookings[room_no] = {
+                "name": name,
+                "days": days,
+                "check_in": None,
+                "check_out": None
+            }
+            print(f"Room {room_no} booked for {name} for {days} days")
+        else:
+            print("Room not available!")
+
+    def check_in(self, room_no):
+        if room_no in self.bookings:
+            self.bookings[room_no]["check_in"] = datetime.now()
+            print(f"Checked in to Room {room_no}")
+        else:
+            print("No booking found!")
+
+    def check_out(self, room_no):
+        if room_no in self.bookings:
+            booking = self.bookings[room_no]
+
+            days = booking["days"]
+            price = self.rooms[room_no]["price"]
+            total = days * price
+
+            booking["check_out"] = datetime.now()
+
+            print("\nCheck-out successful!")
+            print(f"Name: {booking['name']}")
+            print(f"Stay Duration: {days} days")
+            print(f"Total Amount: ₹{total}")
+
+            self.rooms[room_no]["status"] = "Available"
+            del self.bookings[room_no]
+        else:
+            print("Invalid room!")
+
+# Main program
+hotel = Hotel()
+
+while True:
+    print("\n--- HOTEL MANAGEMENT SYSTEM ---")
+    print("1. View Rooms")
+    print("2. Book Room")
+    print("3. Check-In")
+    print("4. Check-Out")
+    print("5. Exit")
+
+    choice = int(input("Enter choice: "))
+
+    if choice == 1:
+        hotel.display_rooms()
+
+    elif choice == 2:
+        name = input("Enter customer name: ")
+        room_no = int(input("Enter room number: "))
+        days = int(input("Enter number of days: "))
+        hotel.book_room(name, room_no, days)
+
+    elif choice == 3:
+        room_no = int(input("Enter room number: "))
+        hotel.check_in(room_no)
+
+    elif choice == 4:
+        room_no = int(input("Enter room number: "))
+        hotel.check_out(room_no)
+
+    elif choice == 5:
+        print("Thank you!")
+        break
+
+    else:
+        print("Invalid choice!")
